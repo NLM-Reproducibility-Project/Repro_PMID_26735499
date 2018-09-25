@@ -15,11 +15,11 @@ RUN conda install -c bioconda gatk
 RUN conda install -c bioconda star
 
 #install other software needed for seq processing
-RUN conda install -c bioconda samtools
+RUN conda install -c bioconda samtools package=0.1.18
 RUN conda install -c bioconda picard
 
 #install software for variant calling and annotation
-RUN conda install -c bioconda varscan
+RUN conda install -c bioconda varscan package=2.3.7
 RUN conda install -c bioconda snpeff
 
 #install software to run snakemake
