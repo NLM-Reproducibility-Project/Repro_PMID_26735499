@@ -1,19 +1,27 @@
-# Dockerfile for reproducing exome and rna sequence alignment
-FROM lh3lh3/bwa
-MAINTAINER Leo Meister
+#use an official Miniconda3 runtime as a parent image
+FROM continuumio/miniconda3
+MAINTAINER Sara Jones
 
-RUN apt-get update
-RUN apt-get install sra-toolkit
-RUN mkdir /opt/
-WORKDIR /opt/
+#install software for retrieving sequences from SRA
+RUN conda install -c bioconda sra-tools
+#set up download/cache area for downloaded files and references
+#RUN /vdb-config -i 
 
-# SRA Toolkit install
-RUN wget http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.6.2/sratoolkit.2.6.2-ubuntu64.tar.gz
-RUN tar zxvf sratoolkit.2.6.2-ubuntu64.tar.gz
-RUN ln -s /notebook/sratoolkit.2.6.2-ubuntu64/bin/* /usr/local/bin/
+#install software for exome-seq alignment
+RUN conda install -c bioconda bwa
+RUN conda install -c bioconda gatk
 
-# STAR install
-RUN wget https://github.com/alexdobin/STAR/archive/STAR_2.4.1c.tar.gz
-RUN tar zxvf STAR_2.4.1c.tar.gz
-RUN cd STAR-STAR_2.4.1c/source && make STAR
-RUN ln -s /notebook/STAR-STAR_2.4.1c/bin/Linux_x86_64/STAR /usr/local/bin/
+#install software for rna-seq alignment
+RUN conda install -c bioconda star
+
+#install other software needed for seq processing
+RUN conda install -c bioconda samtools package=0.1.18
+RUN conda install -c bioconda picard
+
+#install software for variant calling and annotation
+RUN conda install -c bioconda varscan package=2.3.7
+RUN conda install -c bioconda snpeff
+
+#install software to run snakemake
+#RUN conda install -c bioconda snakemake
+RUN conda install -c bioconda -c conda-forge snakemake
